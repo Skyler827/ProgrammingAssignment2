@@ -2,21 +2,23 @@
 ## For the Coursera Course: "R programming" by Brian Caffo
 
 ## This function takes a matrix and returns a list of 3 functions:
-## -A function to get the value of the matrix
+## -A function to get the matrix itself
 ## -A function to get the inverse, which is then cached for later lookup
-## -A function to change the matrix, which deletes the cache of the inverse
+## -A function to set the matrix, which invalidates the cache of the inverse
 
-makeCacheMatrix <- function(m = matrix()) {
-    .inverse <- NA                         # stores an inverse matrix, or NA
+makeCacheMatrix <- function(M = matrix()) {
+    cache <- NA                 # stores the inverse of the matrix
+    cache_valid <- FALSE
     list(
-        get = function () {m},
+        get = function () {M},
         inverse = function () {
-            if (anyNA(.inverse)) {         # anyNA() is used insteady of is.na()
-                .inverse <<- solve(m)      # to suppress warning when .inverse
-                .inverse                   # is a matrix.
-            } else {.inverse}
-        }
-        set = function (new_m) {x <<- new_x; .inverse <<- NA},
+            if (cache_valid == FALSE) {
+                cache <<- solve(M)
+                cache_valid <<- TRUE
+            }
+            cache
+        },
+        set = function (new_m) {M <<- new_m; cache_valid <<- FALSE}
     )
 }
 
